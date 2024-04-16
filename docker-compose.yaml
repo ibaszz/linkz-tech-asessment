@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API=http://backend:4000
+    networks:
+      - server
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - server
+
+networks:
+  server:
+    driver: bridge
