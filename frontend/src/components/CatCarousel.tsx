@@ -46,7 +46,7 @@ export const CatCarousel = ({ datas, like, unlike }: CarouselProps) => {
       infinite={true}
       className="w-[calc(100vw-74px)] max-h-56 py-5 px-15 flex flex-row mt-2"
     >
-      {datas &&
+      {(datas &&
         datas.map((r) => (
           <div
             key={r.id}
@@ -75,7 +75,9 @@ export const CatCarousel = ({ datas, like, unlike }: CarouselProps) => {
               </div>
             </div>
           </div>
-        ))}
+        ))) || (
+        <div className="flex flex-col rounded-xl border min-h-52 border-white mx-2 bg-no-repeat bg-cover items-end animate-pulse" />
+      )}
     </Carousel>
   );
 };

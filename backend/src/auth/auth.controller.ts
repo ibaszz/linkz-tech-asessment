@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Request,
   UseGuards,
   Version,
@@ -10,6 +11,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import {
+  DeleteRequestDto,
   LoginPasswordRequestDto,
   LoginRequestDto,
   RegisterPasswordRequestDto,
@@ -68,6 +70,23 @@ export class AuthController {
   async loginHistory(@Request() req) {
     try {
       const histories = await this.authService.getHistories(req);
+      return BaseResponse.createSuccessResponse(null, histories);
+    } catch (e) {
+      return BaseResponse.createFailedResponse(null, null, e.message);
+    }
+  }
+
+  @Version('1')
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: DeleteRequestDto })
+  @Put('delete')
+  @ApiBearerAuth()
+  async delete(@Request() req, @Body() dto: DeleteRequestDto) {
+    try {
+      const histories = await this.authService.deleteUser(
+        req.user.username,
+        dto.password,
+      );
       return BaseResponse.createSuccessResponse(null, histories);
     } catch (e) {
       return BaseResponse.createFailedResponse(null, null, e.message);

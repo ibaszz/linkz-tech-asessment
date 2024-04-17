@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { RegisterPasswordRequestDto } from 'src/auth/request';
 import { Logger } from 'src/commons/logger/Logger';
 import { PrismaService } from 'src/config/db/PrismaService';
-import bcrypt from 'bcrypt';
+import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -16,9 +16,10 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data: {
         email,
-        password: bcrypt.hashSync(password, process.env.JWT_SECRET),
-        image,
+        password: hashSync(password, 10),
+        image: image || '',
         name,
+        latestLogin: new Date(),
       },
     });
 
@@ -30,7 +31,7 @@ export class UsersService {
     withEntities: boolean = false,
   ): Promise<User | undefined> {
     const user = await this.prisma.user.findFirst({
-      where: { email },
+      where: { email, deletedAt: null },
       include: {
         favorites: withEntities && {
           include: {
@@ -55,9 +56,21 @@ export class UsersService {
       },
       where: {
         email: email,
+        deletedAt: null,
       },
     });
 
     return user;
+  }
+
+  async delete(email: string): Promise<void> {
+    this.prisma.user.update({
+      data: {
+        deletedAt: new Date(),
+      },
+      where: {
+        email: email,
+      },
+    });
   }
 }

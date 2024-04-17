@@ -3,6 +3,7 @@ import { APIResponseCallbackProps, useCallApi } from ".";
 import { Session } from "next-auth";
 import { v4 } from "uuid";
 import { useUserContext } from "@/context/UserContext";
+import { RegisterForm } from "@/pages/register";
 
 export const useLogin = ({
   onError,
@@ -32,7 +33,14 @@ export const useRegister = ({
   onSuccess,
 }: APIResponseCallbackProps<UserResponse>) => {
   const { call, isLoading } = useCallApi<
-    { email: string; password: string; name: string },
+    {
+      transactionId: string;
+      channel: string;
+      email: string;
+      password: string;
+      name: string;
+      image?: string;
+    },
     UserResponse
   >({
     method: "POST",
@@ -41,7 +49,20 @@ export const useRegister = ({
     onSuccess,
   });
 
-  return { call, isLoading };
+  return {
+    call: ({ email, imageUrl, password, name }: RegisterForm) =>
+      call({
+        body: {
+          transactionId: `TRX${v4()}`,
+          channel: "credential",
+          email: email!,
+          image: imageUrl,
+          password: password!,
+          name: name!,
+        },
+      }),
+    isLoading,
+  };
 };
 
 export const useProfile = ({

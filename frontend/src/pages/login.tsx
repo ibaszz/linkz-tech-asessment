@@ -3,6 +3,7 @@ import { Logo } from "@/components/Logo";
 import { useUserContext } from "@/context/UserContext";
 import { useRouterReady } from "@/hooks/useRouterReady";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export interface LoginForm {
@@ -89,6 +90,15 @@ export default function Login() {
                   </svg>
                   <span className="ml-3">Sign In</span>
                 </button>
+
+                <div className="w-full text-center mt-2">
+                  <Link
+                    href={"/register"}
+                    className="text-blue-400 hover:opacity-40 transition-all duration-300"
+                  >
+                    dont have an account? Click here
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

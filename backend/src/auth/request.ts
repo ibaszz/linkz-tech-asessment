@@ -14,6 +14,12 @@ export class LoginPasswordRequestDto extends LoginRequestDto {
   password: string;
 }
 
+export class DeleteRequestDto {
+  @IsNotEmpty()
+  @ApiPropertyOptional({ description: 'Password User', default: 'xxxxx' })
+  password: string;
+}
+
 export class RegisterRequestDto extends BaseApiRequest {
   @ApiProperty({ description: 'Email User', default: 'test@gmail.com' })
   @IsEmail()
@@ -23,12 +29,11 @@ export class RegisterRequestDto extends BaseApiRequest {
   @ApiPropertyOptional({ description: 'Name', default: 'xxxxx' })
   name: string;
 
-  @IsNotEmpty()
   @ApiPropertyOptional({
     description: 'Profile Image',
     default: 'http://www.google.com/',
   })
-  image: string;
+  image?: string;
 }
 
 export class RegisterPasswordRequestDto extends RegisterRequestDto {

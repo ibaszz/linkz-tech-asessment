@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import Exception from 'src/commons/exceptions/exception';
 import { UsersService } from 'src/users/users.service';
 import { RegisterPasswordRequestDto, RegisterRequestDto } from './request';
-import bcrypt from 'bcrypt';
+import { compare, hash, hashSync } from 'bcrypt';
 import { LoginHistoryService } from 'src/loginhistory/loginhistory.service';
 
 @Injectable()
@@ -78,7 +78,7 @@ export class AuthService {
       throw Exception.unauthorized(username);
     }
 
-    if (!bcrypt.compareSync(password, user.password)) {
+    if (!(await compare(password, user.password))) {
       throw Exception.userPasswordWrong();
     }
 
@@ -89,6 +89,23 @@ export class AuthService {
         username: user.email,
       }),
     };
+  }
+
+  async deleteUser(email: string, password: string) {
+    const user: User = await this.usersService.findOne(email);
+
+    if (!user.password) {
+      throw Exception.cannotSigninWithThisMethod();
+    }
+
+    if (!user) {
+      throw Exception.unauthorized(email);
+    }
+    if (!(await compare(password, user.password))) {
+      throw Exception.userPasswordWrong();
+    }
+
+    this.usersService.delete(email);
   }
 
   async getHistories(req: any) {

@@ -29,10 +29,11 @@ export function useCallApi<T, Y>({
   path,
   method,
 }: APIResponseCallbackProps<Y> & APIRequestParam): APIRequestCallbackProps<T> {
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const { user } = useUserContext();
 
   const call = (props: APIRequestProps<T> | undefined | null) => {
+    setLoading(true);
     let url = `${BASE_API_URL}/${path}`;
 
     if (props && props.query)
