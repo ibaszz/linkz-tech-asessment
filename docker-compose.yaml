@@ -1,6 +1,20 @@
 version: "3"
 
 services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-linkz}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkz}
+      POSTGRES_DB: linkz_test_assesment
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    restart: unless-stopped
   frontend:
     build:
       context: ./frontend
@@ -24,9 +38,17 @@ services:
       - ./backend:/app
     environment:
       - NODE_ENV=development
+    depends_on:
+      - postgres
     networks:
       - server
+      - db
 
 networks:
   server:
     driver: bridge
+  db:
+    driver: bridge
+
+volumes:
+  postgres:

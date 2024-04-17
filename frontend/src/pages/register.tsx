@@ -1,53 +1,95 @@
+import { SocialButton } from "@/components/Button";
+import { Logo } from "@/components/Logo";
+import { useUserContext } from "@/context/UserContext";
+import { useRouterReady } from "@/hooks/useRouterReady";
+import { useState } from "react";
+import { LoginForm } from "./login";
+
 const Register = () => {
+  const { user, session, login } = useUserContext();
+  const [loginForm, setLoginForm] = useState<LoginForm>({});
+  const { isReady, router } = useRouterReady();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-8">Register</h1>
-      <form className="w-full max-w-sm">
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your name"
-          />
+    <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
+      <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+        <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
+          <Logo animate={false} />
+          <div className="mt-8 flex flex-col items-center">
+            <div className="w-full flex-1 mt-7">
+              <div className="flex flex-col items-center">
+                <SocialButton
+                  onClick={() => login("google")}
+                  text="Sign in with Google"
+                  src="/social/google.svg"
+                />
+              </div>
+
+              <div className="my-8 border-b text-center">
+                <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
+                  Or sign in with e-mail
+                </div>
+              </div>
+
+              <div className="mx-auto max-w-xs">
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                  type="email"
+                  placeholder="Email"
+                  value={loginForm.email}
+                  onChange={(e) =>
+                    setLoginForm({ ...loginForm, email: e.target.value })
+                  }
+                />
+                <input
+                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                  type="password"
+                  placeholder="Password"
+                  value={loginForm.password}
+                  onChange={(e) =>
+                    setLoginForm({ ...loginForm, password: e.target.value })
+                  }
+                />
+                {router.query.error && (
+                  <div className="w-full text-center mt-2">
+                    <code className="text-red-500 text-center ">
+                      {router.query.error}
+                    </code>
+                  </div>
+                )}
+                <button
+                  onClick={() =>
+                    login("credentials", {
+                      email: loginForm.email,
+                      password: loginForm.password,
+                    })
+                  }
+                  className="mt-2 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+                >
+                  <svg
+                    className="w-6 h-6 -ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                    <path d="M20 8v6M23 11h-6" />
+                  </svg>
+                  <span className="ml-3">Sign In</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your email"
-          />
+        <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+          <div
+            className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+            style={{
+              backgroundImage:
+                "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')",
+            }}
+          ></div>
         </div>
-        <div className="mb-6">
-          <label
-            htmlFor="password"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Enter your password"
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-          >
-            Register
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
