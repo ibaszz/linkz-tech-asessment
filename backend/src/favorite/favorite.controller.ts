@@ -1,5 +1,5 @@
-import { Controller, Get, UseGuards, Version, Request } from '@nestjs/common';
-import { Delete, Post, Put, Query } from '@nestjs/common/decorators';
+import { Controller, UseGuards, Version, Request } from '@nestjs/common';
+import { Post, Put, Query } from '@nestjs/common/decorators';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { FavoriteService } from './favorite.service';
