@@ -70,6 +70,10 @@ export class AuthService {
   async loginWithPassword(username: string, password: string) {
     const user: User = await this.usersService.findOne(username);
 
+    if (!user) {
+      throw Exception.unauthorized(username);
+    }
+
     if (user.deletedAt) {
       throw Exception.userIsDeleted();
     }

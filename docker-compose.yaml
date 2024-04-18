@@ -3,11 +3,8 @@ version: "3"
 services:
   postgres:
     image: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-linkz}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkz}
-      POSTGRES_DB: linkz_test_assesment
-      PGDATA: /data/postgres
+    env_file:
+      - .env.example
     volumes:
       - postgres:/data/postgres
     ports:
@@ -19,13 +16,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    env_file:
+      - .env.example
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API=http://backend:4000
     networks:
       - server
     depends_on:
@@ -34,8 +30,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    volumes:
-      - ./backend:/app
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.example
     environment:
       - NODE_ENV=development
     depends_on:

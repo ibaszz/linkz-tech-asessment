@@ -29,7 +29,7 @@ async function bootstrap() {
     .setTitle('Linkz - Test Asessment')
     .setDescription('Linkz - Test Assesment API Documentation')
     .setVersion('1.0')
-    .setBasePath('/api-be')
+    .addServer('http://localhost:3000/api-be')
     .addBearerAuth()
     .build();
 
