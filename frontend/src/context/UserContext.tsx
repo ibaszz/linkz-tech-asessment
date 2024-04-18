@@ -18,6 +18,7 @@ type User = {
   image: string;
   name: string;
   accessToken: string;
+  deleted: boolean;
 };
 
 type UserContextState = {
@@ -48,6 +49,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     accessToken: "",
     image: "",
     name: "",
+    deleted: false,
   });
   const router = useRouter();
 
@@ -63,20 +65,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         image: data.image,
         name: data.name,
         accessToken: data.accessToken,
+        deleted: !!data.deletedAt,
       });
     },
-    onError: (err) => {
-      console.log(err);
-      // logout();
-    },
+    onError: (err) => {},
   });
 
-  const logout = () => {
+  const logout = (params?: string) => {
     setIsLoading(true);
-    router.replace("/login");
-    return signOut().then(() => {
-      removeUser();
-    });
+    console.log("kesini");
+    router.replace(`/login?${params}`);
+    return signOut()
+      .then(() => {
+        removeUser();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const login = (

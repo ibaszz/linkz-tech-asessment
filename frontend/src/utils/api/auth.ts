@@ -50,13 +50,13 @@ export const useRegister = ({
   });
 
   return {
-    call: ({ email, imageUrl, password, name }: RegisterForm) =>
+    call: ({ email, image, password, name }: RegisterForm) =>
       call({
         body: {
           transactionId: `TRX${v4()}`,
           channel: "credential",
           email: email!,
-          image: imageUrl,
+          image,
           password: password!,
           name: name!,
         },
@@ -77,6 +77,25 @@ export const useProfile = ({
   });
 
   return { call, isLoading };
+};
+
+export const useDeleteProfile = ({
+  onError,
+  onSuccess,
+}: APIResponseCallbackProps<ProfileResponse>) => {
+  const { call, isLoading } = useCallApi<{ password: string }, ProfileResponse>(
+    {
+      method: "PUT",
+      path: "/v1/auth/delete",
+      onError,
+      onSuccess,
+    }
+  );
+
+  return {
+    call: (password: string) => call({ body: { password } }),
+    isLoading,
+  };
 };
 
 export const useLikeOrUnlike = ({

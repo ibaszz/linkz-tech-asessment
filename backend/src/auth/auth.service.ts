@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import Exception from 'src/commons/exceptions/exception';
 import { UsersService } from 'src/users/users.service';
 import { RegisterPasswordRequestDto, RegisterRequestDto } from './request';
-import { compare, hash, hashSync } from 'bcrypt';
+import { compare } from 'bcrypt';
 import { LoginHistoryService } from 'src/loginhistory/loginhistory.service';
 
 @Injectable()
@@ -70,6 +70,10 @@ export class AuthService {
   async loginWithPassword(username: string, password: string) {
     const user: User = await this.usersService.findOne(username);
 
+    if (user.deletedAt) {
+      throw Exception.userIsDeleted();
+    }
+
     if (!user.password) {
       throw Exception.cannotSigninWithThisMethod();
     }
@@ -94,15 +98,10 @@ export class AuthService {
   async deleteUser(email: string, password: string) {
     const user: User = await this.usersService.findOne(email);
 
-    if (!user.password) {
-      throw Exception.cannotSigninWithThisMethod();
-    }
-
-    if (!user) {
-      throw Exception.unauthorized(email);
-    }
-    if (!(await compare(password, user.password))) {
-      throw Exception.userPasswordWrong();
+    if (user.password) {
+      if (!(await compare(password, user.password))) {
+        throw Exception.userPasswordWrong();
+      }
     }
 
     this.usersService.delete(email);

@@ -21,8 +21,15 @@ class Exception extends Error {
     );
   }
 
+  static userIsDeleted() {
+    return new Exception(
+      'USR-004',
+      `User Already Deleted, Please Contact Admin`,
+    );
+  }
+
   static userAlreadyRegistered(username) {
-    return new Exception('USR-00', `User: ${username} is Already Registered`);
+    return new Exception('USR-005', `User: ${username} is Already Registered`);
   }
 }
 

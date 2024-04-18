@@ -8,8 +8,8 @@ interface AvatarProps {
 
 export const Avatar = ({ src, width, height }: AvatarProps) => {
   return (
-    <div className="rounded-full border-2 border-neutral-200 shadow-lg items-center align-middle justify-center min-w-10 aspect-square overflow-hidden">
-      <object data={src} className={"w-10"} type="image/jpeg">
+    <div className="rounded-full border-2 border-neutral-200 shadow-lg items-center align-middle justify-center min-w-7 aspect-square overflow-hidden">
+      <object data={src} className={"w-7"} type="image/jpeg">
         <img
           src="/common/user.png"
           width={width}

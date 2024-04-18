@@ -15,7 +15,6 @@ export class LoginPasswordRequestDto extends LoginRequestDto {
 }
 
 export class DeleteRequestDto {
-  @IsNotEmpty()
   @ApiPropertyOptional({ description: 'Password User', default: 'xxxxx' })
   password: string;
 }

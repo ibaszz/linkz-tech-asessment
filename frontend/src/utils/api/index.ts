@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_API_URL } from "../env-config";
 import { BaseResponse } from "./types/BaseResponse";
 import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/router";
 
 interface APIRequestProps<T> {
   body?: T;
@@ -30,7 +31,8 @@ export function useCallApi<T, Y>({
   method,
 }: APIResponseCallbackProps<Y> & APIRequestParam): APIRequestCallbackProps<T> {
   const [isLoading, setLoading] = useState(false);
-  const { user } = useUserContext();
+  const { user, logout } = useUserContext();
+  const router = useRouter();
 
   const call = (props: APIRequestProps<T> | undefined | null) => {
     setLoading(true);
@@ -47,7 +49,14 @@ export function useCallApi<T, Y>({
         authorization: `Bearer ${user?.accessToken}`,
       },
     })
-      .then((r) => r.json() as Promise<BaseResponse<Y>>)
+      .then((r) => {
+        console.log(r.status);
+        if (r.status === 401) {
+          logout();
+          router.replace("/login");
+        }
+        return r.json() as Promise<BaseResponse<Y>>;
+      })
       .then((res) => {
         if (!res.status) {
           return onError && onError(res.desc);

@@ -31,7 +31,7 @@ export class UsersService {
     withEntities: boolean = false,
   ): Promise<User | undefined> {
     const user = await this.prisma.user.findFirst({
-      where: { email, deletedAt: null },
+      where: { email },
       include: {
         favorites: withEntities && {
           include: {
@@ -56,7 +56,6 @@ export class UsersService {
       },
       where: {
         email: email,
-        deletedAt: null,
       },
     });
 
@@ -64,7 +63,7 @@ export class UsersService {
   }
 
   async delete(email: string): Promise<void> {
-    this.prisma.user.update({
+    await this.prisma.user.update({
       data: {
         deletedAt: new Date(),
       },

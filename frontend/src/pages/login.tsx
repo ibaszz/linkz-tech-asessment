@@ -13,7 +13,7 @@ export interface LoginForm {
 
 export default function Login() {
   const { data: session, status } = useSession();
-  const { login } = useUserContext();
+  const { login, logout, user } = useUserContext();
   const [loginForm, setLoginForm] = useState<LoginForm>({});
   const { router } = useRouterReady();
 
@@ -22,6 +22,12 @@ export default function Login() {
       router.replace("/");
     }
   }, [router, status, session]);
+
+  useEffect(() => {
+    if (user?.deleted) {
+      logout();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
